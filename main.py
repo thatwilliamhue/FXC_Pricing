@@ -51,6 +51,8 @@ def api_url_generator(**kwargs):
 
 # Find a way to make this txt file name a variable
 def save_json_rsp(rsp_json):
+    #file_name = "",
+
     with open('json_rsp_27oct.txt', 'w') as outputfile:
         json.dump(rsp_json, outputfile)
     return
@@ -74,7 +76,6 @@ def call_api():
 
     return rsp_json
 
-
 def json_manipulation():
     file = open("json_rsp_27oct.txt", "r")
 
@@ -84,22 +85,19 @@ def json_manipulation():
     start_loc = data.find("[")
     end_loc = data.find("]")
 
+    # save body of data in string
     data = data[(start_loc):(end_loc + 1)]
 
-    print('type of data', type(data))
-
+    # converts body of data to list
     data_json = json.loads(data)
-    print('type of data', type(data_json))
 
-    # df = pd.DataFrame(processed_data)
-
+    # loading body of data as dataframe
     df = pd.DataFrame(data_json)
     df.to_csv('csv-27oct-1613.csv')
-    print('CSV OUTPUT')
+    print('Saved body of data as .csv')
 
-    print(df.shape)
-    print(df.columns)
-    print('COLS ABOVE')
+    #print("Number of rows and colums:", df.shape)
+    print("Colums: ", df.columns)
     print(df)
 
     return
