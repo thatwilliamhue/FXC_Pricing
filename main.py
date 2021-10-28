@@ -48,15 +48,13 @@ def api_url_generator(**kwargs):
 
     return api_url
 
-
 # Find a way to make this txt file name a variable
-def save_json_rsp(rsp_json):
-    #file_name = "",
+def save_to_json(rsp_json):
 
-    with open('json_rsp_27oct.txt', 'w') as outputfile:
-        json.dump(rsp_json, outputfile)
+    file_name = (rsp_json['call_timestamp']+" RAW.txt").replace(':', '_')
+    output_file = open(file_name, 'w+')
+    json.dump(rsp_json, output_file)
     return
-
 
 def call_api():
     api_url = api_url_generator(wrong_arg="Hi",
@@ -72,12 +70,14 @@ def call_api():
     rsp_json = response.json()
     print("Response: ", response)
     print('\n\nJSON:', rsp_json)
-    save_json_rsp(rsp_json)
+    save_to_json(rsp_json)
 
     return rsp_json
 
-def json_manipulation():
-    file = open("json_rsp_27oct.txt", "r")
+def json_manipulation(new_rsp_json):
+
+    file_name_lookup = (new_rsp_json['call_timestamp'] + " RAW.txt").replace(':', '_')
+    file = open(file_name_lookup, "r")
 
     # read the content of file
     data = file.read()
@@ -93,8 +93,10 @@ def json_manipulation():
 
     # loading body of data as dataframe
     df = pd.DataFrame(data_json)
-    df.to_csv('csv-27oct-1613.csv')
-    print('Saved body of data as .csv')
+
+    csv_file_name = (new_rsp_json['call_timestamp'] + " BODY.csv").replace(':', '_')
+    df.to_csv(csv_file_name)
+    print('Saved body of data as: '+csv_file_name)
 
     #print("Number of rows and colums:", df.shape)
     print("Colums: ", df.columns)
@@ -103,7 +105,7 @@ def json_manipulation():
     return
 
 
-call_api()
-json_manipulation()
+new_rsp_json = call_api()
+json_manipulation(new_rsp_json)
 
 
