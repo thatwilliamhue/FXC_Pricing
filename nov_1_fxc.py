@@ -5,6 +5,7 @@ Created on Mon Nov  1 14:57:43 2021
 
 @author: callumzs
 """
+import os
 
 import requests
 from datetime import datetime
@@ -13,7 +14,6 @@ import hashlib
 import base64
 import json
 import time
-import csv
 import pandas as pd
 import numpy as np
 
@@ -58,11 +58,22 @@ def api_url_generator(**kwargs):
 
     return api_url
 
+def make_folder(new_folder):
+    if not os.path.exists(new_folder):
+        os.makedirs(new_folder)
+
 # Find a way to make this txt file name a variable
 def save_to_json(rsp_json):
 
-    file_name = (rsp_json['call_timestamp']+" RAW.txt").replace(':', '_')
-    output_file = open(file_name, 'w+')
+    #create new output folder
+    call_timestamp_string = rsp_json['call_timestamp'].replace(':', '_')
+    folder_name = (call_timestamp_string[0:10])
+    new_folder = r'.\output\%s' % (folder_name)
+    make_folder(new_folder)
+
+    #added "to_country" as well as "amount" to the file name to distinguish output
+    file_name = (rsp_json['call_timestamp']+' HK to '+rsp_json['to_country']+" "+rsp_json['amount']+" RAW.txt").replace(':', '_')
+    output_file = open(".\output\%s\%s" % (folder_name, file_name), 'w+')
     json.dump(rsp_json, output_file)
     return
 
@@ -88,8 +99,14 @@ def call_api(fx_amount, to_country_code, to_currency_code):
 
 def json_manipulation(rsp_json, to_country=None, to_currency=None):
 
-    file_name_lookup = (rsp_json['call_timestamp'] + " RAW.txt").replace(':', '_')
-    file = open(file_name_lookup, "r")
+    # damn it Will make this code neater! --> write a wrapper function for save_to_json and json_manipulation, make folder_name and
+    # the first part of the file name global
+
+    call_timestamp_string = rsp_json['call_timestamp'].replace(':', '_')
+    #this extracts the date only
+    folder_name = (call_timestamp_string[0:10])
+    file_name_lookup = (rsp_json['call_timestamp']+' HK to '+rsp_json['to_country']+" "+rsp_json['amount']+" RAW.txt").replace(':', '_')
+    file = open(".\output\%s\%s" % (folder_name, file_name_lookup), "r")
 
     # read the content of file
     data = file.read()
@@ -111,15 +128,13 @@ def json_manipulation(rsp_json, to_country=None, to_currency=None):
     if to_currency and to_country is not None:
     
         #Adding 'to country & currency' to dataframe
-        
-        
-        
+
         df.insert(len(df.columns)-1, "to_country", to_country)
         df.insert(len(df.columns)-1, "to_currency", to_currency)
     
     
 
-    csv_file_name = (rsp_json['call_timestamp'] + " BODY.csv").replace(':', '_')
+    csv_file_name = (rsp_json['call_timestamp']+' HK to '+rsp_json['to_country']+" "+rsp_json['amount']+" BODY.csv").replace(':', '_')
     df.to_csv(csv_file_name)
     print('Saved body of data as: '+csv_file_name)
 
@@ -220,10 +235,9 @@ def run_batch(fx_amounts, conv_to):
     return
 
 
-#run_batch(fx_amounts, conv_to)
-    
 
-
+#run_single(1000, "GB", "GBP")
+run_batch(fx_amounts, conv_to)
 
 
 

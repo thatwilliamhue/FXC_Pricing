@@ -66,6 +66,11 @@ def call_api():
                              pay_in_method='',
                              pay_out_method='Bank%20Account')
 
+    #accept array input (e.g. 20 sets of parameters at once)
+    #corridor HK-UK, 10k --> 20k
+    #corridor HK-US, 10k --> 20k
+    #use control file
+
     response = requests.get(api_url)
     rsp_json = response.json()
     print("Response: ", response)
