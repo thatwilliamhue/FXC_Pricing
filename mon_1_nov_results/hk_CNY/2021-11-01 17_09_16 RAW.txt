@@ -1,0 +1,1 @@
+{"status": "OK", "direction": "Send", "amount": "100.00", "from_country": "HK", "from_currency": "HKD", "to_country": "CH", "to_currency": "CNY", "call_timestamp": "2021-11-01 17:09:16", "call_mid_market_rate": 0.8220095079018374, "mid_market_rate_usd_timestamp": "2021-11-01 17:08:52", "mid_market_rate_usd": 0.12848515996402415, "units": 1}
