@@ -131,11 +131,9 @@ def json_manipulation(rsp_json, to_country=None, to_currency=None):
 
         df.insert(len(df.columns)-1, "to_country", to_country)
         df.insert(len(df.columns)-1, "to_currency", to_currency)
-    
-    
 
     csv_file_name = (rsp_json['call_timestamp']+' HK to '+rsp_json['to_country']+" "+rsp_json['amount']+" BODY.csv").replace(':', '_')
-    df.to_csv(csv_file_name)
+    df.to_csv(".\output\%s\%s" % (folder_name, csv_file_name), "r")
     print('Saved body of data as: '+csv_file_name)
 
     #print("Number of rows and colums:", df.shape)
