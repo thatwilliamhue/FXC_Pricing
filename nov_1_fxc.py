@@ -182,7 +182,7 @@ def run_single(fx_amount, to_country_code, to_currency_code):
 
 
 #Information which has been ran for the daily calls
-fx_amounts = [100,1000,10000,100000,500000,1000000]
+fx_amounts = [100,500,1000,5000,10000,15000,20000,25000,30000,35000,50000,75000,100000,150000]
 
 # conv_to =np.array([['US','GB','CN','SG','DE','JP'],
 #            ['USD','GBP','CNY','SGD','EUR','JPY']])
