@@ -20,11 +20,11 @@ import numpy as np
 api_key = '8c456347e709001b05e1bced1048482d'
 api_secret = '1a5c57d63e55928e7cc57d050f57831705d4e3e0edb594149511257bef9b73c3'
 
-
 def sig_generator(key, secret, date=None):
     if date is None:
         print('Date not specified, using current time.')
         date = datetime.utcnow().date().strftime('%d%m%Y')
+        #date = "03112021"
 
     joined_string = bytes("{}{}".format(date, key),
                           encoding='utf-8')
@@ -81,11 +81,11 @@ def call_api(fx_amount, to_country_code, to_currency_code):
     api_url = api_url_generator(
                              from_country = 'HK',
                              from_currency = 'HKD',
-                             
+
                              to_country = to_country_code,
                              to_currency = to_currency_code,
                              amount = float(fx_amount),
-                             
+
                              pay_in_method='',
                              pay_out_method='Bank%20Account')
 
@@ -122,11 +122,11 @@ def json_manipulation(rsp_json, to_country=None, to_currency=None):
 
     # loading body of data as dataframe
     df = pd.DataFrame(data_json)
-    
-    #if using array inputs for multiple countries/currencies append these to 
+
+    #if using array inputs for multiple countries/currencies append these to
     #dataframe/CSV
     if to_currency and to_country is not None:
-    
+
         #Adding 'to country & currency' to dataframe
 
         df.insert(len(df.columns)-1, "to_country", to_country)
@@ -144,8 +144,8 @@ def json_manipulation(rsp_json, to_country=None, to_currency=None):
 
 
 '''
-Create an excel file for a range of exchance amounts. Can then copy these into 1 to 
-do analysis 
+Create an excel file for a range of exchance amounts. Can then copy these into 1 to
+do analysis
 
 Manually change to currency & country in 'call-api' func and then run again
 
@@ -182,13 +182,13 @@ def run_single(fx_amount, to_country_code, to_currency_code):
 
 
 #Information which has been ran for the daily calls
-fx_amounts = [100,500,1000,5000,10000,15000,20000,25000,30000,35000,50000,75000,100000,150000]
+fx_amounts = [100,500,1000,5000,10000,15000,20000,25000,30000,35000,50000,75000,100000,150000,500000,1000000,2000000,3000000]
 
-# conv_to =np.array([['US','GB','CN','SG','DE','JP'],
-#            ['USD','GBP','CNY','SGD','EUR','JPY']])
+conv_to =np.array([['US','GB','CN','SG','DE','JP'],
+           ['USD','GBP','CNY','SGD','EUR','JPY']])
 
-conv_to =np.array([['US','GB'],
-           ['USD','GBP']])
+# conv_to =np.array([['US','GB'],
+#            ['USD','GBP']])
 
 def run_batch(fx_amounts, conv_to):
     '''
@@ -202,11 +202,11 @@ def run_batch(fx_amounts, conv_to):
     fx_amounts : List
         List of amounts the user is sending (float's).
     conv_to : NumPy Array
-        2d array of the fx transaction to country (2-letter country code) and 
+        2d array of the fx transaction to country (2-letter country code) and
         to currency (3-letter currency code).
-        In format: ([to_countries],[to_currencies]) in which 
+        In format: ([to_countries],[to_currencies]) in which
         len(to_cuntries)=len(to_currencies)
-        
+
 
     Returns
     -------
@@ -215,22 +215,22 @@ def run_batch(fx_amounts, conv_to):
     '''
     print (np.shape(conv_to))
     print (len(conv_to[0]))
-               
+
     #take 1 country/currency pair
     for i in range (len(conv_to[0])):
-        
+
         for j in range (len(fx_amounts)):
-            #Call FXC for each fx_amount on the given country/currency pair 
-        
+            #Call FXC for each fx_amount on the given country/currency pair
+
             rsp_json = call_api(fx_amounts[j], conv_to[0][i], conv_to[1][i])
-            
+
             json_manipulation(rsp_json, conv_to[0][i], conv_to[1][i])
-            
+
             print ('FX amount: {}, To Country: {}, To Currency: {}'.format(fx_amounts[j], conv_to[0][i], conv_to[1][i]))
-            
+
             #To ennsure filename are unique and prevent overwrites
             time.sleep(1)
-            
+
     return
 
 
